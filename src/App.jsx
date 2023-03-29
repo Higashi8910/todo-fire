@@ -1,8 +1,18 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./styles.css";
 import { InputTodo } from "./components/InputTodo";
 import { IncompleteTodos } from "./components/IncompleteTodos";
 import { CompleteTodos } from "./components/CompleteTodos";
+import {
+  collection,
+  addDoc,
+  deleteDoc,
+  doc,
+  getDocs,
+  updateDoc,
+} from "firebase/firestore";
+
+import db from "./firebase";
 
 export const App = () => {
   //const [変数名, 変数に値を設定する関数]
@@ -10,39 +20,70 @@ export const App = () => {
   const [incompleteTodos, setIncompleteTodos] = useState([]);
   const [completeTodos, setCompleteTodos] = useState([]);
 
+  useEffect(() => {
+    const getTodosFromFirestore = async () => {
+      const todoCollection = collection(db, "todos");
+      const todoSnapshot = await getDocs(todoCollection);
+      const todoList = todoSnapshot.docs.map((doc) => ({
+        ...doc.data(),
+        id: doc.id,
+      }));
+      setIncompleteTodos(todoList.filter((todo) => !todo.complete));
+      setCompleteTodos(todoList.filter((todo) => todo.complete));
+    };
+
+    getTodosFromFirestore();
+  }, []);
+
   //入力した値が変化したときにリアルタイムでテキストボックスに代入する用
   const onChangeTodoText = (event) => setTodoText(event.target.value);
 
-  const onClickAdd = () => {
-    if (todoText === "") return;
-    //今のincompleteTodosの後ろにtodoTextが追加された。
-    const newTodo = [...incompleteTodos, todoText];
-    setIncompleteTodos(newTodo);
-    setTodoText("");
+  const onClickAdd = async (text) => {
+    if (text === "") return;
+    const newTodo = { title: text, complete: false };
+    await addDoc(collection(db, "todos"), newTodo);
+    const todoSnapshot = await getDocs(collection(db, "todos"));
+    const todoList = todoSnapshot.docs.map((doc) => ({
+      ...doc.data(),
+      id: doc.id,
+    }));
+    setIncompleteTodos(todoList.filter((todo) => !todo.complete));
+    setCompleteTodos(todoList.filter((todo) => todo.complete));
   };
 
-  const onClickDelete = (index) => {
-    const newTodos = [...incompleteTodos];
-    newTodos.splice(index, 1);
-    setIncompleteTodos(newTodos);
-  };
-
-  const onClickComplete = (index) => {
-    const newIncompleteTodos = [...incompleteTodos];
-    newIncompleteTodos.splice(index, 1);
-
-    const newCompleteTodos = [...completeTodos, incompleteTodos[index]];
+  const onClickDelete = async (todo) => {
+    const todoId = todo.id;
+    await deleteDoc(doc(db, "todos", todoId));
+    const newIncompleteTodos = incompleteTodos.filter(
+      (incompleteTodo) => incompleteTodo.id !== todoId
+    );
+    const newCompleteTodos = completeTodos.filter(
+      (completeTodo) => completeTodo.id !== todoId
+    );
     setIncompleteTodos(newIncompleteTodos);
     setCompleteTodos(newCompleteTodos);
   };
 
-  const onClickBack = (index) => {
-    const newCompleteTodos = [...completeTodos];
-    newCompleteTodos.splice(index, 1);
-
-    const newIncompleteTodos = [...incompleteTodos, completeTodos[index]];
-    setCompleteTodos(newCompleteTodos);
+  const onClickComplete = async (todo) => {
+    const todoId = todo.id;
+    await updateDoc(doc(db, "todos", todoId), { complete: true });
+    const newIncompleteTodos = incompleteTodos.filter(
+      (incompleteTodo) => incompleteTodo.id !== todoId
+    );
+    todo.complete = true;
     setIncompleteTodos(newIncompleteTodos);
+    setCompleteTodos([...completeTodos, todo]);
+  };
+
+  const onClickBack = async (todo) => {
+    const todoId = todo.id;
+    await updateDoc(doc(db, "todos", todoId), { complete: false });
+    const newCompleteTodos = completeTodos.filter(
+      (completeTodo) => completeTodo.id !== todoId
+    );
+    todo.complete = false;
+    setCompleteTodos(newCompleteTodos);
+    setIncompleteTodos([...incompleteTodos, todo]);
   };
 
   return (
@@ -52,6 +93,7 @@ export const App = () => {
         onChange={onChangeTodoText}
         onClick={onClickAdd}
         disabled={incompleteTodos.length >= 5}
+        setTodoText={setTodoText}
       />
       {incompleteTodos.length >= 5 && (
         <p style={{ color: "red" }}>登録ができるtodoは5個までです。</p>

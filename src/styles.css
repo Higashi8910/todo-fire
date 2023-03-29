@@ -55,3 +55,25 @@ li {
   align-items: center;
   padding-bottom: 4px;
 }
+
+.dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #c1ffff;
+  padding: 16px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dialog input {
+  margin-bottom: 8px;
+}
+
+.dialog button {
+  border-radius: 8px;
+  padding: 8px;
+}
