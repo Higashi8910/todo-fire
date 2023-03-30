@@ -3,6 +3,7 @@ import "./styles.css";
 import { InputTodo } from "./components/InputTodo";
 import { IncompleteTodos } from "./components/IncompleteTodos";
 import { CompleteTodos } from "./components/CompleteTodos";
+import { EditTodoDialog } from "/project/todo-fire/src/components";
 import {
   collection,
   addDoc,
@@ -19,6 +20,9 @@ export const App = () => {
   const [todoText, setTodoText] = useState("");
   const [incompleteTodos, setIncompleteTodos] = useState([]);
   const [completeTodos, setCompleteTodos] = useState([]);
+
+  // 状態を追加
+  const [editingTodo, setEditingTodo] = useState(null);
 
   useEffect(() => {
     const getTodosFromFirestore = async () => {
@@ -38,9 +42,15 @@ export const App = () => {
   //入力した値が変化したときにリアルタイムでテキストボックスに代入する用
   const onChangeTodoText = (event) => setTodoText(event.target.value);
 
-  const onClickAdd = async (text) => {
+  const onClickAdd = async (text, startDate, endDate, priority) => {
     if (text === "") return;
-    const newTodo = { title: text, complete: false };
+    const newTodo = {
+      title: text,
+      complete: false,
+      startDate: startDate.toISOString().substring(0, 10),
+      endDate: endDate.toISOString().substring(0, 10),
+      priority: priority,
+    };
     await addDoc(collection(db, "todos"), newTodo);
     const todoSnapshot = await getDocs(collection(db, "todos"));
     const todoList = todoSnapshot.docs.map((doc) => ({
@@ -49,6 +59,32 @@ export const App = () => {
     }));
     setIncompleteTodos(todoList.filter((todo) => !todo.complete));
     setCompleteTodos(todoList.filter((todo) => todo.complete));
+  };
+
+  // 編集機能を実装
+  const onClickEdit = (todo) => {
+    setEditingTodo(todo);
+  };
+
+  const onSubmitEdit = async (updatedTodo) => {
+    const todoId = updatedTodo.id;
+    await updateDoc(doc(db, "todos", todoId), {
+      title: updatedTodo.title,
+      startDate: updatedTodo.startDate,
+      endDate: updatedTodo.endDate,
+      priority: updatedTodo.priority,
+    });
+    const newTodos = todos.map((todo) => {
+      if (todo.id === todoId) {
+        return updatedTodo;
+      }
+      return todo;
+    });
+    setTodos(newTodos);
+    setEditingTodo(null);
+  };
+  const onCloseEditDialog = () => {
+    setEditingTodo(null);
   };
 
   const onClickDelete = async (todo) => {
@@ -101,9 +137,17 @@ export const App = () => {
       <IncompleteTodos
         todos={incompleteTodos}
         onClickComplete={onClickComplete}
+        onClickEdit={onClickEdit}
         onClickDelete={onClickDelete}
       />
       <CompleteTodos todos={completeTodos} onClickBack={onClickBack} />
+      {editingTodo && (
+        <EditTodoDialog
+          todo={editingTodo}
+          onSubmit={onSubmitEdit}
+          onClose={onCloseEditDialog}
+        />
+      )}
     </>
   );
 };

@@ -1,3 +1,5 @@
+@import "react-datepicker/dist/react-datepicker.css";
+
 body {
   font-family: sans-serif;
 }
@@ -76,4 +78,20 @@ li {
 .dialog button {
   border-radius: 8px;
   padding: 8px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  border: 1px solid #000;
+  padding: 8px;
+  text-align: left;
+}
+
+th {
+  background-color: #f2f2f2;
 }
