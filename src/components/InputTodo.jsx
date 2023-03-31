@@ -1,5 +1,6 @@
 import { useState } from "react";
 import DatePicker from "react-datepicker";
+import godImage from "/project/todo-fire/src/components/godImage.png";
 
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -23,11 +24,18 @@ const Dialog = (props) => {
   const [priority, setPriority] = useState("小");
 
   const onChangeDialogText = (event) => setDialogText(event.target.value);
-  
+
   const [count, setCount] = useState(0);
+  const [showImage, setShowImage] = useState(false);
 
   const onClickDialogAdd = () => {
-    if (dialogText === "") return;
+    if (dialogText === "") {
+      setCount(count + 1);
+      if (count + 1 >= 10) {
+        setShowImage(true);
+      }
+      return;
+    }
     props.onClick(dialogText, startDate, endDate, priority);
     setDialogText("");
     props.onClose();
@@ -61,6 +69,7 @@ const Dialog = (props) => {
       </div>
       <button onClick={onClickDialogAdd}>追加</button>
       <button onClick={props.onClose}>キャンセル</button>
+      {showImage && <img src={godImage} alt="God Image" />}
     </div>
   );
 };
