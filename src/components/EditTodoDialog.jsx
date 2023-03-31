@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-const EditTodoDialog = ({ todo, onSubmit, onClose }) => {
+export const EditTodoDialog = ({ todo, onSubmit, onClose }) => {
   const [title, setTitle] = useState(todo.title);
   const [startDate, setStartDate] = useState(new Date(todo.startDate));
   const [endDate, setEndDate] = useState(new Date(todo.endDate));
@@ -44,4 +44,3 @@ const EditTodoDialog = ({ todo, onSubmit, onClose }) => {
     </div>
   );
 };
-export default EditTodoDialog;

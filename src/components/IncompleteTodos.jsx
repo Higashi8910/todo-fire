@@ -27,7 +27,6 @@ export const IncompleteTodos = (props) => {
                 <td>{todo.priority}</td>
                 <td>
                   <button onClick={() => onClickComplete(todo)}>完了</button>
-                  <button onClick={() => onClickEdit(todo)}>編集</button>
                   <button onClick={() => onClickDelete(todo)}>削除</button>
                 </td>
               </tr>

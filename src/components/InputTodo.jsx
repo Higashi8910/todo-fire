@@ -5,11 +5,15 @@ import "react-datepicker/dist/react-datepicker.css";
 
 const style = {
   backgroundColor: "#c1ffff",
-  width: "400px",
+  width: "800px",
   height: "30px",
   borderRadius: "8px",
   padding: "8px",
   margin: "8px",
+};
+
+const inputStyle = {
+  width: "87%", // ここで入力ボックスの幅を設定
 };
 
 const Dialog = (props) => {
@@ -19,6 +23,8 @@ const Dialog = (props) => {
   const [priority, setPriority] = useState("小");
 
   const onChangeDialogText = (event) => setDialogText(event.target.value);
+  
+  const [count, setCount] = useState(0);
 
   const onClickDialogAdd = () => {
     if (dialogText === "") return;
@@ -83,6 +89,7 @@ export const InputTodo = (props) => {
         placeholder="TODOを入力"
         value={todoText}
         onChange={(e) => setTodoText(e.target.value)}
+        style={inputStyle}
       />
       {!dialogOpen && (
         <button
