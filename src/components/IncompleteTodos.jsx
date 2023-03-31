@@ -2,6 +2,11 @@ import React from "react";
 
 export const IncompleteTodos = (props) => {
   const { todos, onClickComplete, onClickDelete } = props;
+
+  // 開始日が早い順にソート
+  const sortedTodos = todos.slice().sort((a, b) => {
+    return new Date(a.startDate) - new Date(b.startDate);
+  });
   return (
     <div className="incomplete-area">
       <p className="title">未完了のTODO</p>
@@ -17,7 +22,7 @@ export const IncompleteTodos = (props) => {
           </tr>
         </thead>
         <tbody>
-          {todos.map((todo, index) => {
+          {sortedTodos.map((todo, index) => {
             return (
               <tr key={todo.id}>
                 <td>{index + 1}</td>
