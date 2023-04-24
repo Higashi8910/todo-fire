@@ -1,7 +1,7 @@
 import React from "react";
 
 export const IncompleteTodos = (props) => {
-  const { todos, onClickComplete, onClickDelete } = props;
+  const { todos, onClickComplete, onClickDelete, readOnly } = props;
 
   // 開始日が早い順にソート
   const sortedTodos = todos.slice().sort((a, b) => {
@@ -18,7 +18,7 @@ export const IncompleteTodos = (props) => {
             <th>開始日</th>
             <th>終了日</th>
             <th>優先度</th>
-            <th>操作</th>
+            {!readOnly && <th>操作</th>}
           </tr>
         </thead>
         <tbody>
@@ -30,11 +30,18 @@ export const IncompleteTodos = (props) => {
                 <td>{todo.startDate}</td>
                 <td>{todo.endDate}</td>
                 <td>{todo.priority}</td>
-                <td>
-                  <button onClick={() => onClickComplete(todo)}>完了</button>
-                  <button>編集</button>
-                  <button onClick={() => onClickDelete(todo)}>削除</button>
-                </td>
+
+                {!readOnly && (
+                  <>
+                    <td>
+                      <button onClick={() => onClickComplete(todo)}>
+                        完了
+                      </button>
+                      <button>編集</button>
+                      <button onClick={() => onClickDelete(todo)}>削除</button>
+                    </td>
+                  </>
+                )}
               </tr>
             );
           })}

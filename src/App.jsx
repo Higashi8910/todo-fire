@@ -94,6 +94,8 @@ export const App = () => {
 
   return (
     <>
+      <h1>TODOリスト</h1>
+      <p> TODOリストの編集</p>
       <InputTodo
         todoText={todoText}
         onChange={onChangeTodoText}
