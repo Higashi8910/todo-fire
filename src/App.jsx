@@ -11,6 +11,7 @@ import {
   getDocs,
   updateDoc,
 } from "firebase/firestore";
+import TodoGraph from "./TodoGraph";
 
 import db from "./firebase";
 
@@ -113,6 +114,10 @@ export const App = () => {
         onClickDelete={onClickDelete}
       />
       <CompleteTodos todos={completeTodos} onClickBack={onClickBack} />
+      <TodoGraph
+        completeTodos={completeTodos}
+        incompleteTodos={incompleteTodos}
+      />
     </>
   );
 };

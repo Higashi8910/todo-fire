@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { BrowserRouter, Route, Routes, Link } from "react-router-dom";
 import { App } from "./App";
+import { TodoGraph } from "./TodoGraph";
 import { Sidebar } from "./components/Sidebar";
 import Top from "./Top";
 import { IncompleteTodos } from "./components/IncompleteTodos";
@@ -38,7 +39,7 @@ export const Router = () => {
           }
         />
         <Route path="/todos" element={<App />} />
-        {/* <Route path="/graph" element={<Graph />} /> */}
+        <Route path="/graph" element={<TodoGraph />} />
       </Routes>
     </BrowserRouter>
   );

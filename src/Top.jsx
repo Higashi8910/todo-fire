@@ -23,7 +23,7 @@ const Top = (props) => {
   return (
     <div>
       <h1>トップページ</h1>
-      <p> 現在残っているTODO</p>
+      <p> 現在のTODO</p>
       <IncompleteTodos todos={todos} readOnly={true} />
     </div>
   );

@@ -13,7 +13,7 @@ export const Sidebar = () => {
             <NavLink to="/todos">ToDoリスト</NavLink>
           </li>
           <li>
-            <NavLink to="/progress">ToDo進捗度</NavLink>
+            <NavLink to="/graph">ToDo進捗度</NavLink>
           </li>
         </ul>
       </nav>
