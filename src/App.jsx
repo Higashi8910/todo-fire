@@ -15,26 +15,33 @@ import TodoGraph from "./TodoGraph";
 
 import db from "./firebase";
 
-export const App = () => {
+export const App = ({
+  completeTodos,
+  incompleteTodos,
+  setCompleteTodos,
+  setIncompleteTodos,
+  showGraph = true,
+}) => {
+  // const { showGraph = false } = props;
   //const [変数名, 変数に値を設定する関数]
   const [todoText, setTodoText] = useState("");
-  const [incompleteTodos, setIncompleteTodos] = useState([]);
-  const [completeTodos, setCompleteTodos] = useState([]);
+  // const [incompleteTodos, setIncompleteTodos] = useState([]);
+  // const [completeTodos, setCompleteTodos] = useState([]);
 
-  useEffect(() => {
-    const getTodosFromFirestore = async () => {
-      const todoCollection = collection(db, "todos");
-      const todoSnapshot = await getDocs(todoCollection);
-      const todoList = todoSnapshot.docs.map((doc) => ({
-        ...doc.data(),
-        id: doc.id,
-      }));
-      setIncompleteTodos(todoList.filter((todo) => !todo.complete));
-      setCompleteTodos(todoList.filter((todo) => todo.complete));
-    };
+  // useEffect(() => {
+  //   const getTodosFromFirestore = async () => {
+  //     const todoCollection = collection(db, "todos");
+  //     const todoSnapshot = await getDocs(todoCollection);
+  //     const todoList = todoSnapshot.docs.map((doc) => ({
+  //       ...doc.data(),
+  //       id: doc.id,
+  //     }));
+  //     setIncompleteTodos(todoList.filter((todo) => !todo.complete));
+  //     setCompleteTodos(todoList.filter((todo) => todo.complete));
+  //   };
 
-    getTodosFromFirestore();
-  }, []);
+  //   getTodosFromFirestore();
+  // }, []);
 
   //入力した値が変化したときにリアルタイムでテキストボックスに代入する用
   const onChangeTodoText = (event) => setTodoText(event.target.value);
@@ -114,10 +121,12 @@ export const App = () => {
         onClickDelete={onClickDelete}
       />
       <CompleteTodos todos={completeTodos} onClickBack={onClickBack} />
-      <TodoGraph
-        completeTodos={completeTodos}
-        incompleteTodos={incompleteTodos}
-      />
+      {/* {showGraph && (
+        <TodoGraph
+          completeTodos={completeTodos || []}
+          incompleteTodos={incompleteTodos || []}
+        />
+      )} */}
     </>
   );
 };

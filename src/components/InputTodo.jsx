@@ -65,6 +65,16 @@ const Dialog = (props) => {
       return;
     }
 
+    if (!startDate) {
+      setError("startDate", { type: "required" });
+      return;
+    }
+
+    if (!endDate) {
+      setError("endDate", { type: "required" });
+      return;
+    }
+
     console.log(data);
     if (data.dialogText === "god") {
       setShowImage(true);
@@ -91,8 +101,8 @@ const Dialog = (props) => {
   // };
 
   useEffect(() => {
-    register("startDate");
-    register("endDate");
+    register("startDate", { required: true });
+    register("endDate", { required: true });
     register("priority", { required: true });
   }, [register]);
 
@@ -102,6 +112,11 @@ const Dialog = (props) => {
       setValue("existingTodoTexts", todoTexts);
     }
   }, [props.incompleteTodos, setValue]);
+
+  useEffect(() => {
+    setValue("startDate", startDate);
+    setValue("endDate", endDate);
+  }, [startDate, endDate, setValue]);
 
   return (
     <div className="dialog">
@@ -136,6 +151,11 @@ const Dialog = (props) => {
               setValue("startDate", date);
             }}
           />
+          {errors &&
+            errors.startDate &&
+            errors.startDate.type === "required" && (
+              <p style={{ color: "red" }}>開始日を選択してください。</p>
+            )}
         </div>
         <div>
           <label>終了日：</label>
@@ -147,6 +167,9 @@ const Dialog = (props) => {
               setValue("endDate", date);
             }}
           />
+          {errors && errors.endDate && errors.endDate.type === "required" && (
+            <p style={{ color: "red" }}>終了日を選択してください。</p>
+          )}
         </div>
         {errors && errors.endDate && errors.endDate.type === "invalid" && (
           <p style={{ color: "red" }}>
